@@ -5,6 +5,7 @@ import Resultado from './componentes/Resultado.jsx'
 import Desempenho from './componentes/Desempenho.jsx'
 import XaiGlobal from './componentes/XaiGlobal.jsx'
 import Limitacoes from './componentes/Limitacoes.jsx'
+import { SeletorIdioma, useIdioma } from './i18n/idioma.jsx'
 import { preverComExplicacao, simularPosicoes, verificarParidade } from './modelo/inferencia.js'
 
 function valoresIniciais(m) {
@@ -18,6 +19,7 @@ function valoresIniciais(m) {
 }
 
 export default function App({ modelo }) {
+  const { t, data } = useIdioma()
   const [valores, setValores] = useState(() => valoresIniciais(modelo))
   const [hrsSemLeitura, setHrsSemLeitura] = useState(false)
 
@@ -34,25 +36,25 @@ export default function App({ modelo }) {
     <>
       <header className="topo">
         <div className="topo-interno">
-          <span className="selo font-mono">XAI · Random Forest · validação por ciclo</span>
+          <div className="topo-linha">
+            <span className="selo font-mono">{t('topo.selo')}</span>
+            <SeletorIdioma />
+          </div>
           <h1 className="font-display">
-            Previsão de quebra na <span className="destaque">defumação de mortadela</span>
+            {t('topo.titulo1')}<span className="destaque">{t('topo.titulo2')}</span>
           </h1>
-          <p className="subtitulo">
-            Ajuste os parâmetros de um ciclo da estufa e veja a quebra prevista, o status
-            OK/NOK e quais variáveis mais pesaram na previsão. O modelo roda inteiro no seu navegador.
-          </p>
-          <nav className="menu font-mono" aria-label="Seções">
-            <a href="#simulador">Simulador</a>
-            <a href="#desempenho">Desempenho</a>
-            <a href="#xai">XAI global</a>
-            <a href="#limitacoes">Limitações</a>
+          <p className="subtitulo">{t('topo.subtitulo')}</p>
+          <nav className="menu font-mono" aria-label="Menu">
+            <a href="#simulador">{t('menu.simulador')}</a>
+            <a href="#desempenho">{t('menu.desempenho')}</a>
+            <a href="#xai">{t('menu.xai')}</a>
+            <a href="#limitacoes">{t('menu.limitacoes')}</a>
           </nav>
         </div>
       </header>
 
       <main>
-        <section id="simulador" className="grade-simulador" aria-label="Simulador">
+        <section id="simulador" className="grade-simulador" aria-label={t('menu.simulador')}>
           <Formulario
             modelo={modelo}
             valores={valores}
@@ -70,19 +72,17 @@ export default function App({ modelo }) {
           />
         </section>
 
-        <Desempenho meta={meta} mae={modelo.mae_validacao} />
-        <XaiGlobal meta={meta} />
-        <Limitacoes meta={meta} mae={modelo.mae_validacao} pesoTipico={modelo.medianas_referencia['Peso de Entrada da Gaiola (kg)']} />
+        <Desempenho modelo={modelo} />
+        <XaiGlobal modelo={modelo} />
+        <Limitacoes modelo={modelo} />
       </main>
 
       <footer className="rodape font-mono">
-        <span>
-          Modelo gerado em {meta.gerado_em} · {meta.medicoes} medições · {meta.ciclos} ciclos de estufa
-        </span>
+        <span>{t('rodape.gerado', { data: data(meta.gerado_em), n: meta.medicoes, c: meta.ciclos })}</span>
         <span className={paridade.iguais === paridade.total ? 'ok' : 'nok'}>
-          Inferência verificada: {paridade.iguais}/{paridade.total} previsões idênticas às do scikit-learn
+          {t('rodape.paridade', { i: paridade.iguais, t: paridade.total })}
         </span>
-        <span>Dissertação de mestrado — Higor Lucas</span>
+        <span>{t('rodape.autor')}</span>
       </footer>
     </>
   )

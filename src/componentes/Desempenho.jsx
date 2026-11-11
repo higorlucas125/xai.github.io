@@ -1,47 +1,58 @@
-export default function Desempenho({ meta, mae }) {
+import { useIdioma } from '../i18n/idioma.jsx'
+import { Dispersao } from './Graficos.jsx'
+
+export default function Desempenho({ modelo }) {
+  const { t, n } = useIdioma()
+  const meta = modelo.metadados
+  const mae = modelo.mae_validacao
   const linhas = Object.entries(meta.desempenho).sort((a, b) => a[1].MAE_media - b[1].MAE_media)
-  const t = meta.teste_vs_baseline
+  const teste = meta.teste_vs_baseline
   const baseline = meta.desempenho['Baseline (mediana)']
+  const { real, previsto } = modelo.graficos.previsto_vs_real
+  const nomeModelo = (nome) => (nome.startsWith('Baseline') ? t(`modelo.${nome}`) : nome)
+
   return (
     <section id="desempenho" className="secao">
-      <h2 className="font-display">Desempenho do modelo</h2>
+      <h2 className="font-display">{t('des.titulo')}</h2>
       <p>
-        Avaliado com <strong>GroupKFold por ciclo de estufa</strong> (5 folds × 5 repetições):
-        nenhuma gaiola do mesmo ciclo aparece ao mesmo tempo no treino e no teste.
-        O baseline sempre prevê a mediana histórica; um modelo útil precisa superá-lo.
+        {t('des.intro1')}<strong>{t('des.introForte')}</strong>{t('des.intro2')}
       </p>
       <div className="tabela-rolagem">
         <table>
           <thead>
-            <tr><th>Modelo</th><th>MAE (p.p.)</th><th>RMSE (p.p.)</th><th>R²</th></tr>
+            <tr><th>{t('des.modelo')}</th><th>MAE (p.p.)</th><th>RMSE (p.p.)</th><th>R²</th></tr>
           </thead>
           <tbody>
             {linhas.map(([nome, d]) => (
               <tr key={nome} className={nome === meta.modelo ? 'linha-destaque' : ''}>
-                <td>{nome}{nome === meta.modelo ? <span className="etiqueta">usado no site</span> : null}</td>
-                <td className="font-mono">{d.MAE_media.toFixed(3)} ± {d.MAE_dp.toFixed(3)}</td>
-                <td className="font-mono">{d.RMSE_media.toFixed(3)} ± {d.RMSE_dp.toFixed(3)}</td>
-                <td className="font-mono">{d.R2_media.toFixed(2)} ± {d.R2_dp.toFixed(2)}</td>
+                <td>
+                  {nomeModelo(nome)}
+                  {nome === meta.modelo ? <span className="etiqueta">{t('des.usadoNoSite')}</span> : null}
+                </td>
+                <td className="font-mono">{n(d.MAE_media, 3)} ± {n(d.MAE_dp, 3)}</td>
+                <td className="font-mono">{n(d.RMSE_media, 3)} ± {n(d.RMSE_dp, 3)}</td>
+                <td className="font-mono">{n(d.R2_media)} ± {n(d.R2_dp)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       </div>
       <div className="indicadores">
-        <div><span className="font-mono">{mae.toFixed(3)}</span>MAE do Random Forest (p.p. de quebra)</div>
+        <div><span className="font-mono">{n(mae, 3)}</span>{t('des.maeRf')}</div>
         <div>
-          <span className="font-mono">{(100 * (1 - mae / baseline.MAE_media)).toFixed(0)}%</span>
-          menos erro que o baseline
+          <span className="font-mono">{n(100 * (1 - mae / baseline.MAE_media), 0)}%</span>
+          {t('des.menosErro')}
         </div>
-        <div><span className="font-mono">p = {t.p_valor.toFixed(3)}</span>t-test corrigido (Nadeau &amp; Bengio)</div>
+        <div><span className="font-mono">p = {n(teste.p_valor, 3)}</span>{t('des.ttest')}</div>
       </div>
-      <p className="nota">
-        O RMSE e o R² são dominados por um único ciclo NOK de 15,7% de quebra, que nenhum modelo prevê.
-        Por isso o MAE é a métrica principal.
-      </p>
-      <figure>
-        <img src="./previsto_vs_real.png" alt="Gráfico de dispersão da quebra prevista contra a real, fora da amostra" loading="lazy" />
-        <figcaption>Quebra prevista × real (previsões fora da amostra, por ciclo).</figcaption>
+      <p className="nota">{t('des.notaRmse')}</p>
+      <figure className="figura-grafico">
+        <h3 className="titulo-grafico">{t('des.grafTitulo')}</h3>
+        <Dispersao
+          real={real} previsto={previsto} limite={modelo.limites_ok[1]}
+          rotX={t('des.eixoReal')} rotY={t('des.eixoPrevisto')} rotIdeal={t('des.ideal')}
+        />
+        <figcaption>{t('des.grafLegenda')}</figcaption>
       </figure>
     </section>
   )

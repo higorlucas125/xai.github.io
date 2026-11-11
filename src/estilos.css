@@ -100,7 +100,6 @@ td { padding: .55rem .5rem; border-bottom: 1px solid rgba(42,47,61,.6); white-sp
 .indicadores span { display: block; font-size: 1.5rem; color: var(--text); margin-bottom: .2rem; }
 .importancias { max-width: 760px; margin-bottom: 1rem; }
 figure { margin-top: 1.25rem; }
-figure img { max-width: 100%; height: auto; border-radius: 8px; background: #fff; }
 figcaption { color: var(--muted); font-size: .78rem; margin-top: .35rem; }
 .lista { display: grid; gap: .8rem; max-width: 85ch; padding-left: 1.1rem; color: #C3CCDA; }
 
@@ -123,3 +122,30 @@ figcaption { color: var(--muted); font-size: .78rem; margin-top: .35rem; }
   .numero-grande { font-size: 2.4rem; }
 }
 .dica { font-size: .8rem; color: #C3CCDA; background: var(--surface2); border-left: 3px solid var(--accent); border-radius: 6px; padding: .6rem .8rem; margin-bottom: .75rem; }
+
+/* Idioma */
+.topo-linha { display: flex; justify-content: space-between; align-items: center; gap: 1rem; flex-wrap: wrap; }
+.seletor-idioma { display: inline-flex; border: 1px solid var(--border); border-radius: 6px; overflow: hidden; }
+.seletor-idioma button { background: transparent; color: var(--muted); border: 0; padding: 4px 10px; font-family: var(--mono);
+  font-size: .72rem; letter-spacing: .08em; cursor: pointer; }
+.seletor-idioma button + button { border-left: 1px solid var(--border); }
+.seletor-idioma button:hover { color: var(--text); }
+.seletor-idioma button.ativo { background: rgba(245,158,11,.15); color: var(--accent); }
+
+/* Gráficos SVG */
+.figura-grafico { background: var(--surface); border: 1px solid var(--border); border-radius: var(--raio); padding: 1rem 1rem .75rem; }
+.titulo-grafico { font-size: .85rem; color: var(--accent); margin-bottom: .5rem; }
+.grafico { width: 100%; height: auto; display: block; }
+.figura-grafico > .grafico { max-width: 560px; }
+.grade-pdp { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.grafico text { fill: var(--muted); font-family: var(--mono); font-size: 10px; }
+.grafico .rotulo-eixo { fill: #C3CCDA; font-family: var(--display); font-size: 11px; }
+.grafico .grade { stroke: var(--border); stroke-width: 1; stroke-dasharray: 2 3; }
+.grafico .eixo { stroke: var(--muted); stroke-width: 1; }
+.grafico .ideal { stroke: var(--text); stroke-width: 1; stroke-dasharray: 5 4; opacity: .7; }
+.grafico .rotulo-ideal { fill: var(--text); opacity: .7; }
+.grafico .limite { stroke: var(--nok); stroke-width: 1; stroke-dasharray: 2 3; opacity: .7; }
+.grafico .ponto { fill: var(--azul); opacity: .55; }
+.grafico .ponto-nok { fill: var(--nok); }
+.grafico .curva { fill: none; stroke: var(--azul); stroke-width: 2; }
+@media (max-width: 760px) { .grade-pdp { grid-template-columns: 1fr; } }

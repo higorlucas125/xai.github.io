@@ -1,6 +1,6 @@
 # XAI na defumação de mortadela — previsão de quebra
 
-Site estático da dissertação de mestrado: simula a **quebra (%)** de uma gaiola de mortadela defumada a partir dos parâmetros do ciclo da estufa e **explica** cada previsão (XAI).
+Site estático da dissertação de mestrado, em **português e inglês**: simula a **quebra (%)** de uma gaiola de mortadela defumada a partir dos parâmetros do ciclo da estufa e **explica** cada previsão (XAI).
 
 🔗 **https://higorlucas125.github.io/xai.github.io/**
 
@@ -15,6 +15,10 @@ O modelo (Random Forest com 300 árvores) **roda inteiro no navegador**, sem bac
 - **XAI global**: importância por permutação (nos ciclos de teste) e dependência parcial.
 - **Limitações**: como interpretar os resultados.
 
+O idioma é escolhido pelo botão **PT / EN** no topo. Na primeira visita, o site segue o idioma do navegador, e a escolha fica salva. Para compartilhar já num idioma, use `?lang=pt` ou `?lang=en` no link. Os textos ficam em `src/i18n/textos.js`.
+
+Os gráficos são desenhados em SVG a partir dos dados exportados com o modelo, por isso também são traduzidos.
+
 No rodapé, o site confere a própria inferência com previsões geradas pelo scikit-learn ("25/25 previsões idênticas").
 
 ## Estrutura
@@ -23,7 +27,8 @@ No rodapé, o site confere a própria inferência com previsões geradas pelo sc
 docs/            ← site compilado (publicado pelo GitHub Pages)
 src/             ← código-fonte React
   modelo/inferencia.js   ← imputação → scaler → árvores, em JavaScript
-public/          ← modelo.json e figuras (copiados para docs/ no build)
+  i18n/textos.js         ← textos em português e inglês
+public/          ← modelo.json (copiado para docs/ no build)
 build.mjs        ← build com esbuild
 ```
 
@@ -39,7 +44,7 @@ O site já está compilado em `docs/`, então não é preciso rodar nada para pu
    ```bash
    python experimentos/exportar_modelo_web.py
    ```
-2. Copie `resultados/atividade5/modelo_web.json` para `public/modelo.json` (e as figuras, se mudaram).
+2. Copie `resultados/atividade5/modelo_web.json` para `public/modelo.json`.
 3. Recompile e faça o commit:
    ```bash
    npm install

@@ -46,27 +46,26 @@ export function contribuicoes(m, amostra) {
     .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]))
 }
 
-/** Previsão completa com status, explicação e recomendação (espelha prever_com_explicacao). */
+/**
+ * Previsão completa com status, explicação e recomendação (espelha prever_com_explicacao).
+ * A recomendação volta como dados ({ tipo, principal, efeito }); o texto é montado
+ * na interface, no idioma escolhido.
+ */
 export function preverComExplicacao(m, amostra) {
   const quebra = prever(m, amostra)
   const status = classificar(m, quebra)
   const contrib = contribuicoes(m, amostra)
   const [principal, efeito] = contrib[0]
-  const [li, ls] = m.limites_ok
-  const fmt = (v) => `${v >= 0 ? '+' : ''}${v.toFixed(3)} p.p.`
+  const delta = quebra - m.mediana_previsoes
+
+  let tipo
+  if (status === 'NOK') tipo = 'nok'
+  else if (delta > 0.02) tipo = 'acima'
+  else if (delta >= -0.02) tipo = 'proxima'
+  else tipo = 'abaixo'
 
   // Efeitos abaixo de 0,005 p.p. são ruído numérico: não vale apontar "maior influência"
-  const influencia = Math.abs(efeito) >= 0.005 ? ` Maior influência: ${principal} (${fmt(efeito)}).` : ''
-  let recomendacao
-  if (status === 'NOK') {
-    recomendacao = `Alerta: quebra prevista fora da faixa (${li}; ${ls}].${influencia}`
-  } else if (quebra - m.mediana_previsoes > 0.02) {
-    recomendacao = `Dentro da faixa, mas acima da mediana histórica (${m.mediana_previsoes.toFixed(2)}%).${influencia}`
-  } else if (quebra - m.mediana_previsoes >= -0.02) {
-    recomendacao = `Dentro da faixa, próxima da mediana histórica (${m.mediana_previsoes.toFixed(2)}%). Nenhuma ação necessária.`
-  } else {
-    recomendacao = `Dentro da faixa e abaixo da mediana histórica (${m.mediana_previsoes.toFixed(2)}%). Nenhuma ação necessária.`
-  }
+  const recomendacao = { tipo, principal: Math.abs(efeito) >= 0.005 ? principal : null, efeito }
   return { quebra, status, contribuicoes: contrib, recomendacao }
 }
 
