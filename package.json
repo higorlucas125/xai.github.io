@@ -1,0 +1,18 @@
+{
+  "name": "xai-mortadela",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Site estático: previsão de quebra na defumação de mortadela com XAI (modelo roda no navegador)",
+  "scripts": {
+    "build": "node build.mjs",
+    "dev": "node build.mjs && npx --yes serve docs"
+  },
+  "dependencies": {
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "esbuild": "^0.25.0"
+  }
+}
