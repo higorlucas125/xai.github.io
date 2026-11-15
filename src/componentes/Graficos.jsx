@@ -66,6 +66,55 @@ export function Dispersao({ real, previsto, limite, rotX, rotY, rotIdeal }) {
   )
 }
 
+/**
+ * Barras verticais; aceita uma ou mais séries (lado a lado) e valores negativos.
+ * series: [{ nome, valores, classe }] — classe define a cor (ver estilos .barra-*).
+ */
+export function Barras({ rotulos, series, rotY, casas = 1, sufixo = '', larg = 560, alt = 280 }) {
+  const { n } = useIdioma()
+  const m = { t: 16, d: 10, b: 30, e: 52 }
+  const todos = series.flatMap((s) => s.valores)
+  const dom = [Math.min(0, ...todos), Math.max(0, ...todos)]
+  const folga = (dom[1] - dom[0]) * 0.12 || 1
+  const domY = [dom[0] < 0 ? dom[0] - folga : 0, dom[1] + folga]
+  const y = escala(domY, [alt - m.b, m.t])
+  const passo = (larg - m.e - m.d) / rotulos.length
+  const largBarra = (passo * 0.72) / series.length
+  const yTk = marcas(domY, 4)
+  return (
+    <svg viewBox={`0 0 ${larg} ${alt}`} className={`grafico${larg > 560 ? ' grafico-largo' : ''}`} role="img" aria-label={rotY}>
+      {yTk.map((v) => (
+        <g key={`y${v}`} className="eixos">
+          <line x1={m.e} x2={larg - m.d} y1={y(v)} y2={y(v)} className="grade" />
+          <text x={m.e - 6} y={y(v)} dy="0.32em" textAnchor="end">{n(v, casas)}</text>
+        </g>
+      ))}
+      <line x1={m.e} x2={larg - m.d} y1={y(0)} y2={y(0)} className="eixo" />
+      {rotulos.map((r, i) => {
+        const x0 = m.e + i * passo + passo * 0.14
+        return (
+          <g key={r}>
+            {series.map((s, j) => {
+              const v = s.valores[i]
+              const topo = Math.min(y(v), y(0))
+              return (
+                <rect
+                  key={s.nome} x={x0 + j * largBarra} y={topo} width={largBarra - 1}
+                  height={Math.max(Math.abs(y(v) - y(0)), 1)} rx="2" className={`barra-${s.classe}`}
+                >
+                  <title>{`${s.nome ? `${s.nome} · ` : ''}${r}: ${n(v, casas)}${sufixo}`}</title>
+                </rect>
+              )
+            })}
+            <text x={x0 + passo * 0.36} y={alt - m.b + 16} textAnchor="middle">{r}</text>
+          </g>
+        )
+      })}
+      <text transform={`translate(12 ${(m.t + alt - m.b) / 2}) rotate(-90)`} textAnchor="middle" className="rotulo-eixo">{rotY}</text>
+    </svg>
+  )
+}
+
 export function Linha({ grade, valores, rotX, rotY, inteiro = false }) {
   const larg = 300
   const alt = 210

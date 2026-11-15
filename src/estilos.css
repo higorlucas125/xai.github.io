@@ -149,3 +149,21 @@ figcaption { color: var(--muted); font-size: .78rem; margin-top: .35rem; }
 .grafico .ponto-nok { fill: var(--nok); }
 .grafico .curva { fill: none; stroke: var(--azul); stroke-width: 2; }
 @media (max-width: 760px) { .grade-pdp { grid-template-columns: 1fr; } }
+
+/* Melhorias (versão fim a fim) */
+.menu a.menu-novo { color: var(--accent); }
+.menu a.menu-novo::after { content: 'novo'; margin-left: .35rem; font-size: .58rem; border: 1px solid rgba(245,158,11,.5); border-radius: 3px; padding: 0 3px; vertical-align: 1px; }
+.tabela-melhorias td { white-space: normal; vertical-align: top; color: #C3CCDA; }
+.tabela-melhorias td:first-child { white-space: nowrap; }
+.tabela-melhorias td:nth-child(2) { color: var(--muted); }
+.indicadores small { font-size: .8rem; color: var(--muted); }
+.subtitulo-secao { font-size: 1.05rem; margin: 1.75rem 0 0; }
+.grade-melhorias { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.grade-melhorias .figura-grafico { margin-top: 1rem; }
+.figura-grafico .legenda { margin: .4rem 0 0; }
+.grafico .barra-nok { fill: var(--nok); opacity: .85; }
+.grafico .barra-azul { fill: var(--azul); opacity: .85; }
+.leg-azul::before { content: ''; display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin-right: 5px; background: var(--azul); }
+#melhorias .lista { margin-top: 1.25rem; }
+.figura-grafico > .grafico.grafico-largo { max-width: none; }
+@media (max-width: 760px) { .grade-melhorias { grid-template-columns: 1fr; } .tabela-melhorias td:first-child { white-space: normal; } }

@@ -5,6 +5,7 @@ import Resultado from './componentes/Resultado.jsx'
 import Desempenho from './componentes/Desempenho.jsx'
 import XaiGlobal from './componentes/XaiGlobal.jsx'
 import Limitacoes from './componentes/Limitacoes.jsx'
+import Melhorias from './componentes/Melhorias.jsx'
 import { SeletorIdioma, useIdioma } from './i18n/idioma.jsx'
 import { preverComExplicacao, simularPosicoes, verificarParidade } from './modelo/inferencia.js'
 
@@ -49,6 +50,7 @@ export default function App({ modelo }) {
             <a href="#desempenho">{t('menu.desempenho')}</a>
             <a href="#xai">{t('menu.xai')}</a>
             <a href="#limitacoes">{t('menu.limitacoes')}</a>
+            <a href="#melhorias" className="menu-novo">{t('menu.melhorias')}</a>
           </nav>
         </div>
       </header>
@@ -75,6 +77,7 @@ export default function App({ modelo }) {
         <Desempenho modelo={modelo} />
         <XaiGlobal modelo={modelo} />
         <Limitacoes modelo={modelo} />
+        <Melhorias />
       </main>
 
       <footer className="rodape font-mono">

@@ -14,6 +14,7 @@ O modelo (Random Forest com 300 árvores) **roda inteiro no navegador**, sem bac
 - **Desempenho**: modelos comparados com GroupKFold por ciclo e t-test corrigido de Nadeau & Bengio.
 - **XAI global**: importância por permutação (nos ciclos de teste) e dependência parcial.
 - **Limitações**: como interpretar os resultados.
+- **Melhorias** (nova): o que a versão fim a fim corrigiu (umidade das estufas 10–14, junção 1:1, 12 posições, base sintética) e o que os dados revelaram (mudança de regime em dez/2021, efeito do turno e da posição por período). Dados em `src/dados/melhorias.js`.
 
 O idioma é escolhido pelo botão **PT / EN** no topo. Na primeira visita, o site segue o idioma do navegador, e a escolha fica salva. Para compartilhar já num idioma, use `?lang=pt` ou `?lang=en` no link. Os textos ficam em `src/i18n/textos.js`.
 
@@ -52,3 +53,34 @@ O site já está compilado em `docs/`, então não é preciso rodar nada para pu
    ```
 
 Para ver localmente: `npm run dev` (compila e serve `docs/` em http://localhost:3000).
+
+## Comandos
+
+```bash
+# 1. Instalar dependências (uma vez)
+npm install
+
+# 2. Ver localmente (compila e serve docs/ em http://localhost:3000)
+npm run dev
+
+# 3. Compilar para publicação (gera docs/)
+npm run build
+
+# 4. Publicar: commit + push; o GitHub Pages serve main:/docs
+git add -A && git commit -m "Atualiza o site" && git push
+```
+
+### Atualizar a seção Melhorias
+
+1. No `Mestrado_final`, execute o notebook completo (≈7 min):
+   ```bash
+   cd ipynb
+   jupyter nbconvert --to notebook --execute Dissertacao_fim_a_fim.ipynb --output Dissertacao_fim_a_fim_executado.ipynb
+   ```
+2. Copie os números das Partes 6, 6b, 7, 8 e 9 para `src/dados/melhorias.js`.
+3. `npm run build` e faça o commit.
+
+### Textos e idiomas
+
+Todos os textos (PT/EN) ficam em `src/i18n/textos.js`. As chaves da seção Melhorias começam com `mel.`.
+
