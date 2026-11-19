@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apresentação — XAI na Indústria Alimentícia</title>
+<meta name="description" content="Técnicas de IA Explicável aplicadas ao problema de manutenção preditiva na indústria alimentícia: o tema, os desafios e os resultados.">
+<meta name="theme-color" content="#0D0F14">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%230D0F14'/><text x='16' y='22' font-size='16' text-anchor='middle' fill='%23F59E0B' font-family='monospace'>%25</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<!--
+  COMO EDITAR
+  ===========
+  Todo o conteúdo fica no array SLIDES (procure "CONTEÚDO DOS SLIDES").
+  Cada slide é um objeto com um "tipo":
+    capa     → titulo, subtitulo, autores[], rodape
+    texto    → titulo, kicker?, paragrafos[] (use **negrito**), itens[]? (cartões), assinatura?, nota?
+    topicos  → titulo, kicker?, itens[], nota?
+    numeros  → titulo, kicker?, numeros[{valor, rotulo, detalhe?}], nota?
+    fluxo    → titulo, kicker?, etapas[{titulo, texto}], nota?
+    colunas  → titulo, kicker?, colunas[{titulo, itens[]}], nota?
+    barras   → titulo, kicker?, rotulos[], series[{nome, valores[], cor: 'a'|'b'}], unidade, casas,
+               texto[] ao lado, nota?
+    tabela   → titulo, kicker?, cabecalho[], linhas[[...]], nota?
+  Para adicionar, remover ou reordenar slides, edite o array.
+
+  NAVEGAÇÃO: → / espaço / clique avançam · ← volta · Home/End · F tela cheia · O visão geral · T tema
+  PDF: Ctrl+P (cada slide vira uma página; ative "gráficos de fundo")
+  Link direto para um slide: .../apresentacao/#5
+-->
+<style>
+  :root {
+    --bg: #0D0F14; --slide: #161A23; --surface2: #1E2533; --ink: #E2E8F0; --muted: #8391A7; --line: #2A2F3D;
+    --accent: #F59E0B; --accent-soft: rgba(245, 158, 11, .10); --b: #3B82F6; --b-soft: rgba(59, 130, 246, .12);
+    --nok: #EF4444; --ok: #22C55E; --shadow: 0 10px 40px rgba(0, 0, 0, .45);
+    --display: 'Outfit', system-ui, sans-serif; --mono: 'DM Mono', ui-monospace, monospace;
+  }
+  :root[data-theme="light"] {
+    --bg: #F1F3F6; --slide: #FFFFFF; --surface2: #F4F6F9; --ink: #141A24; --muted: #5B6676; --line: #E1E5EB;
+    --accent: #B45309; --accent-soft: rgba(180, 83, 9, .08); --b: #1D4ED8; --b-soft: rgba(29, 78, 216, .08);
+    --nok: #B91C1C; --ok: #15803D; --shadow: 0 10px 40px rgba(20, 20, 40, .12);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink); font-family: var(--display); -webkit-font-smoothing: antialiased; }
+  body { overflow: hidden; }
+
+  /* Palco 16:9 escalado para caber na janela */
+  #palco { position: fixed; inset: 0; display: grid; place-items: center; }
+  .slide { width: 1280px; height: 720px; background: var(--slide); border: 1px solid var(--line); box-shadow: var(--shadow);
+    border-radius: 14px; padding: 60px 80px 52px; position: absolute; display: none; flex-direction: column;
+    transform: var(--escala); transform-origin: center center; overflow: hidden; }
+  .slide.ativo { display: flex; animation: entra .35s ease; }
+  @keyframes entra { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: reduce) { .slide.ativo { animation: none; } }
+
+  .kicker { font-family: var(--mono); font-size: 15px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+  h1 { font-size: 44px; line-height: 1.12; margin: 0 0 26px; font-weight: 700; letter-spacing: -.01em; }
+  h2 { font-size: 21px; margin: 0 0 14px; font-family: var(--mono); font-weight: 500; color: var(--accent); text-transform: uppercase; letter-spacing: .06em; }
+  .corpo { flex: 1; min-height: 0; display: flex; flex-direction: column; justify-content: center; }
+  .nota { margin-top: auto; padding-top: 16px; font-size: 15px; color: var(--muted); border-top: 1px solid var(--line); }
+  strong { color: var(--accent); font-weight: 700; }
+
+  /* capa */
+  .capa { justify-content: center; background:
+    radial-gradient(circle at 88% 18%, var(--accent-soft) 0 22%, transparent 22.2%),
+    linear-gradient(135deg, var(--slide), var(--bg)); }
+  .capa .selo { align-self: flex-start; font-family: var(--mono); font-size: 14px; letter-spacing: .12em; text-transform: uppercase;
+    color: var(--accent); border: 1px solid var(--accent); border-radius: 4px; padding: 4px 10px; margin-bottom: 26px; }
+  .capa h1 { font-size: 56px; max-width: 980px; }
+  .capa .sub { font-size: 25px; color: var(--muted); max-width: 860px; line-height: 1.4; }
+  .capa .autores { margin-top: 44px; font-size: 19px; line-height: 1.7; }
+  .capa .rodape { position: absolute; bottom: 42px; left: 80px; font-family: var(--mono); font-size: 14px; color: var(--muted); }
+
+  /* texto corrido */
+  .texto p { font-size: 25px; line-height: 1.5; margin: 0 0 18px; max-width: 1060px; }
+  .texto .assinatura { font-family: var(--mono); color: var(--muted); font-size: 17px; margin-top: 8px; }
+  .texto.pendente p { color: var(--muted); font-style: italic; }
+  .disciplinas { list-style: none; padding: 0; margin: 10px 0 0; display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; max-width: 900px; }
+  .disciplinas li { background: var(--surface2); border-left: 4px solid var(--accent); border-radius: 8px; padding: 16px 20px; font-size: 23px; font-weight: 600; }
+
+  /* tópicos */
+  ul.itens { list-style: none; padding: 0; margin: 0; display: grid; gap: 20px; }
+  ul.itens li { font-size: 26px; line-height: 1.38; padding-left: 34px; position: relative; }
+  ul.itens li::before { content: ""; position: absolute; left: 0; top: .5em; width: 12px; height: 12px; border-radius: 2px; background: var(--accent); }
+
+  /* números */
+  .numeros { display: grid; gap: 22px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .numero { background: var(--surface2); border-radius: 12px; padding: 24px 24px 20px; border-top: 4px solid var(--accent); }
+  .numero .v { font-family: var(--mono); font-size: 46px; font-weight: 500; letter-spacing: -.02em; }
+  .numero .r { font-size: 19px; margin-top: 6px; font-weight: 600; }
+  .numero .d { font-size: 16px; color: var(--muted); margin-top: 8px; line-height: 1.4; }
+
+  /* fluxo */
+  .fluxo { display: grid; gap: 16px; grid-auto-flow: column; grid-auto-columns: 1fr; align-items: stretch; }
+  .etapa { background: var(--surface2); border-radius: 12px; padding: 22px 18px; position: relative; }
+  .etapa .n { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); color: #0D0F14; display: grid; place-items: center; font-family: var(--mono); font-weight: 500; margin-bottom: 14px; }
+  .etapa h3 { margin: 0 0 8px; font-size: 21px; }
+  .etapa p { margin: 0; font-size: 16px; line-height: 1.45; color: var(--muted); }
+  .etapa:not(:last-child)::after { content: "→"; position: absolute; right: -15px; top: 40%; color: var(--accent); font-size: 22px; font-weight: 800; }
+
+  /* colunas */
+  .colunas { display: grid; gap: 28px; grid-auto-flow: column; grid-auto-columns: 1fr; }
+  .coluna { background: var(--surface2); border-radius: 12px; padding: 24px 28px; }
+  .coluna:first-child { border-top: 4px solid var(--b); }
+  .coluna:first-child h2 { color: var(--b); }
+  .coluna:nth-child(2) { border-top: 4px solid var(--accent); }
+  .coluna ul { margin: 0; padding-left: 22px; display: grid; gap: 12px; }
+  .coluna li { font-size: 20px; line-height: 1.4; }
+
+  /* barras */
+  .grafico { display: grid; grid-template-columns: 1.3fr 1fr; gap: 40px; align-items: center; }
+  .grafico svg { width: 100%; height: auto; }
+  .grafico svg text { fill: var(--ink); font-family: var(--mono); }
+  .grafico ul { margin: 0; padding-left: 22px; display: grid; gap: 14px; }
+  .grafico li { font-size: 21px; line-height: 1.4; }
+  .legenda { display: flex; gap: 20px; font-family: var(--mono); font-size: 15px; color: var(--muted); margin-top: 6px; }
+  .legenda span::before { content: ""; display: inline-block; width: 12px; height: 12px; border-radius: 2px; margin-right: 7px; vertical-align: -1px; }
+  .legenda .a::before { background: var(--accent); }
+  .legenda .b::before { background: var(--b); }
+
+  /* tabela */
+  table { border-collapse: collapse; width: 100%; font-size: 19px; }
+  th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--line); vertical-align: top; line-height: 1.35; }
+  th { color: var(--muted); font-family: var(--mono); font-size: 14px; font-weight: 500; text-transform: uppercase; letter-spacing: .08em; }
+  td:first-child { font-weight: 600; }
+
+  /* barra de progresso e controles */
+  #progresso { position: fixed; left: 0; bottom: 0; height: 3px; background: var(--accent); transition: width .3s; z-index: 5; }
+  #contador { position: fixed; right: 18px; bottom: 12px; font-family: var(--mono); font-size: 13px; color: var(--muted); z-index: 5; }
+  #controles { position: fixed; left: 14px; bottom: 10px; display: flex; gap: 6px; z-index: 5; opacity: .4; transition: opacity .2s; }
+  #controles:hover, #controles:focus-within { opacity: 1; }
+  #controles button, #controles a { background: var(--slide); color: var(--ink); border: 1px solid var(--line); border-radius: 8px;
+    padding: 6px 11px; font: inherit; font-size: 13px; cursor: pointer; text-decoration: none; }
+
+  /* visão geral */
+  body.geral { overflow: auto; }
+  body.geral #palco { position: static; display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 18px; padding: 24px; }
+  body.geral .slide { display: flex; position: relative; transform: none; width: 100%; height: auto; aspect-ratio: 16 / 9; zoom: .25; cursor: pointer; animation: none; }
+
+  @media print {
+    @page { size: 1280px 720px; margin: 0; }
+    body { overflow: visible; background: none; }
+    #palco { position: static; display: block; }
+    .slide { display: flex !important; position: relative; transform: none !important; box-shadow: none; border-radius: 0; page-break-after: always; animation: none; }
+    #progresso, #contador, #controles { display: none; }
+  }
+</style>
+</head>
+<body>
+<div id="palco"></div>
+<div id="progresso"></div>
+<div id="contador"></div>
+<nav id="controles" aria-label="Controles da apresentação">
+  <a href="../" title="Voltar ao site">⌂ site</a>
+  <button data-acao="anterior" title="Anterior (←)">←</button>
+  <button data-acao="proximo" title="Próximo (→)">→</button>
+  <button data-acao="geral" title="Visão geral (O)">▦</button>
+  <button data-acao="tema" title="Tema claro/escuro (T)">◐</button>
+  <button data-acao="tela" title="Tela cheia (F)">⛶</button>
+</nav>
+
+<script>
+/* =====================================================================
+   CONTEÚDO DOS SLIDES — edite aqui
+   Números: ipynb/Dissertacao_fim_a_fim_executado.ipynb (Mestrado_final), escopo MSD.
+   ===================================================================== */
+const SLIDES = [
+  {
+    tipo: 'capa',
+    selo: 'Dissertação de mestrado · PPGCO/UFU',
+    titulo: 'Técnicas de IA Explicável aplicadas ao Problema de Manutenção Preditiva na Indústria Alimentícia',
+    subtitulo: 'O caso da quebra de peso na defumação de mortadela: prever quando o processo vai sair da faixa e explicar por quê',
+    autores: [
+      'Higor Lucas de Araújo Freitas',
+      'Orientadora: Profa. Fabíola Souza Fernandes Pereira',
+      'Coorientador: Prof. Flávio de Oliveira Silva',
+    ],
+    rodape: 'Faculdade de Computação · Universidade Federal de Uberlândia',
+  },
+  {
+    tipo: 'texto',
+    kicker: 'Motivação',
+    titulo: 'Por que fazer um mestrado',
+    paragrafos: [
+      'A motivação surgiu em um momento em que eu me sentia **parado no tempo**: estava somente trabalhando e não conseguia ir para a frente.',
+      'Vi ali uma **oportunidade de melhorar o meu conhecimento**. O mestrado veio como uma forma de **aprender algo novo e diferente**.',
+    ],
+    assinatura: '— Higor Lucas de Araújo Freitas',
+  },
+  {
+    tipo: 'texto',
+    kicker: 'Início do mestrado',
+    titulo: 'Primeiro, as disciplinas',
+    paragrafos: [
+      'Comecei como **aluno especial (ouvinte)**. As notas eram por conceito (A, B, C, D) e, para continuar no mestrado, eu precisava tirar **B ou mais**.',
+      'Por isso, o foco no começo foi **somente as disciplinas obrigatórias**:',
+    ],
+    itens: ['Lógica de Programação', 'Teoria da Computação', 'Mineração de Dados', 'Inteligência Artificial'],
+  },
+  {
+    tipo: 'topicos',
+    kicker: 'O problema',
+    titulo: 'A quebra só é conhecida no dia seguinte',
+    itens: [
+      '**Quebra** = % de massa (água e gordura) que a gaiola perde entre a entrada na estufa e a saída do resfriamento',
+      'Faixa aceita para a mortadela defumada: **5 % a 8,5 %**',
+      'Abaixo de 5 % → produto com água demais → **o lote inteiro é reprocessado**',
+      'Acima de 8,5 % → o produto segue, mas com **menos rendimento**',
+      'A pesagem acontece depois do resfriamento: quando o problema aparece, o lote já foi produzido',
+    ],
+  },
+  {
+    tipo: 'fluxo',
+    kicker: 'O processo',
+    titulo: 'Da gaiola à pesagem',
+    etapas: [
+      { titulo: 'Carga', texto: '~60 mortadelas por gaiola. 1ª pesagem.' },
+      { titulo: 'Estufa', texto: '12 gaiolas por estufa, em posições fixas (1 a 12).' },
+      { titulo: 'Cozimento', texto: 'Ar a ~87 °C por ~10 h: secagem, defumação e cozimento.' },
+      { titulo: 'Fim do ciclo', texto: 'Quando o núcleo do produto (TN) chega a ~71 °C.' },
+      { titulo: 'Resfriamento', texto: '~−5 °C por ~8 h. 2ª pesagem e cálculo da quebra.' },
+    ],
+    nota: 'A IHM da estufa registra a temperatura do ar (TR), a umidade (hr/UR), a temperatura do núcleo (TN), os setpoints e a etapa da receita.',
+  },
+  {
+    tipo: 'colunas',
+    kicker: 'Manutenção preditiva do processo',
+    titulo: 'Antecipar a falha em vez de descobri-la na balança',
+    colunas: [
+      { titulo: 'Hoje: reativo', itens: [
+        'O lote fora da faixa só é detectado na pesagem final',
+        'A correção é o **reprocesso**: mais estufa, energia e mão de obra',
+        'A causa fica na experiência de cada operador',
+      ] },
+      { titulo: 'Proposta: preditivo + XAI', itens: [
+        'Usar os sinais da estufa e da produção para **prever** a quebra',
+        'Sinalizar o risco de quebra baixa **antes** do fim do processo',
+        'Explicar **quais fatores** levam ao risco, para agir na causa',
+      ] },
+    ],
+  },
+  {
+    tipo: 'colunas',
+    kicker: 'Por que IA explicável',
+    titulo: 'Uma previsão sem explicação não muda o processo',
+    colunas: [
+      { titulo: 'Modelo caixa-preta', itens: [
+        'Diz "esta gaiola vai ficar abaixo de 5 %"',
+        'Não diz o que ajustar',
+        'Difícil de validar com quem conhece o processo',
+        'Pode acertar pelos motivos errados',
+      ] },
+      { titulo: 'Modelo + XAI', itens: [
+        '**Permutação**: quais variáveis importam no conjunto',
+        '**SHAP**: quanto cada variável empurra cada previsão',
+        '**PDP**: como a previsão muda com uma variável',
+        '**LIME**: por que esta gaiola foi sinalizada',
+      ] },
+    ],
+  },
+  {
+    tipo: 'numeros',
+    kicker: 'Dados reais da fábrica',
+    titulo: 'Duas bases, dois períodos',
+    numeros: [
+      { valor: '24.804', rotulo: 'gaiolas · 2021–22', detalhe: 'As 12 gaiolas de cada estufada, com turno, estufa e posição.' },
+      { valor: '7,4 %', rotulo: 'com quebra abaixo de 5 %', detalhe: '1.825 casos reais de quebra baixa.' },
+      { valor: '2.509', rotulo: 'ciclos de estufa · 2023', detalhe: 'Curvas de temperatura, umidade e etapas exportadas da IHM.' },
+      { valor: '620', rotulo: 'pesagens ligadas · 2023', detalhe: 'Cada pesagem ligada ao ciclo que a produziu (335 ciclos).' },
+    ],
+    nota: 'Escopo: mortadela defumada. Fontes: planilhas de gestão da quebra e exportações da IHM das estufas.',
+  },
+  {
+    tipo: 'tabela',
+    kicker: 'Desafios · dados',
+    titulo: 'Antes de modelar, foi preciso consertar os dados',
+    cabecalho: ['Desafio', 'O que acontecia', 'Como foi resolvido'],
+    linhas: [
+      ['Umidade "zerada"', 'Estufas 10–14 exportam a coluna "UR"; o leitor buscava só "hr" e gravava 0', 'Leitura pelos dois nomes'],
+      ['Junção duplicada', 'Juntar pesagem e ciclo pela data criava cópias e misturava ciclos', 'Junção 1 pesagem → 1 ciclo (último ciclo antes da pesagem)'],
+      ['Arquivos heterogêneos', '18 exportações UTF-16, planilhas .xlsb, etapas com nomes diferentes', 'Parser único e etapas padronizadas'],
+      ['Precisão da balança', '1 kg ≈ 0,19 p.p. de quebra', 'Assumido como limite de precisão'],
+      ['Dados confidenciais', 'Dados de produção de uma empresa real', 'Resultados agregados; nada de dados brutos no site'],
+    ],
+  },
+  {
+    tipo: 'tabela',
+    kicker: 'Desafios · modelagem',
+    titulo: 'Os erros mais perigosos davam resultados bons demais',
+    cabecalho: ['Desafio', 'Sintoma', 'Solução'],
+    linhas: [
+      ['Classe rara', 'Em 2023, 619 de 620 pesagens dentro da faixa: um "OK/NOK" não tem o que aprender', 'Regressão em 2023; classificação de quebra baixa em 2021–22'],
+      ['Vazamento entre treino e teste', 'Gaiolas do mesmo ciclo nos dois lados inflavam a métrica', 'Validação por grupo (ciclo / dia)'],
+      ['Vazamento pelo calendário', 'Com o mês, PR-AUC de **0,33**; sem ele, **0,16**', 'Mês removido: o modelo aprendia o período, não o processo'],
+      ['Base sintética antiga', 'Rótulo sorteado sem relação com as variáveis', 'Gerador condicionado à classe + teste em dados reais'],
+      ['Mudança de regime', 'A quebra baixa praticamente some em dez/2021', 'Explicações calculadas por período'],
+    ],
+  },
+  {
+    tipo: 'fluxo',
+    kicker: 'Método',
+    titulo: 'Pipeline completo, dos arquivos brutos às explicações',
+    etapas: [
+      { titulo: 'Leitura', texto: 'Exportações da IHM e planilhas de quebra.' },
+      { titulo: 'Curvas', texto: 'Duração, TN final, desvio TR − setpoint, horas por etapa.' },
+      { titulo: 'Junção', texto: 'Cada pesagem ligada ao ciclo que a produziu.' },
+      { titulo: 'Modelos', texto: 'Random Forest, XGBoost, Logística e baselines.' },
+      { titulo: 'XAI', texto: 'Permutação, SHAP, PDP e LIME.' },
+    ],
+    nota: 'Validação por grupo (5 dobras × 3 repetições) e t-test corrigido de Nadeau & Bengio. Tudo em um notebook único e reprodutível.',
+  },
+  {
+    tipo: 'barras',
+    kicker: 'Achado · mudança de regime',
+    titulo: 'Em dezembro de 2021 o processo mudou',
+    unidade: '% de gaiolas com quebra < 5 %',
+    casas: 1,
+    rotulos: ['ago', 'set', 'out', 'nov', 'dez', 'jan', 'fev', 'mar', 'abr', 'mai'],
+    series: [{ nome: '', valores: [41.1, 19.0, 22.2, 9.4, 3.4, 0.2, 0.3, 0.3, 0.0, 0.2], cor: 'a' }],
+    texto: [
+      'A quebra baixa cai de **41 %** em agosto/2021 para **quase zero** a partir de janeiro/2022',
+      'A causa não está nos dados: precisa ser confirmada com a fábrica',
+      'Consequência: a base tem **dois regimes**, e as explicações precisam ser lidas por período',
+    ],
+    nota: 'Mortadela defumada, ago/2021 a mai/2022, 24.804 gaiolas.',
+  },
+  {
+    tipo: 'barras',
+    kicker: 'Achado · turno',
+    titulo: 'O Turno 1 concentra a quebra baixa nos dois períodos',
+    unidade: '% de gaiolas com quebra < 5 %',
+    casas: 1,
+    rotulos: ['Turno 1', 'Turno 2', 'Turno 3'],
+    series: [
+      { nome: 'ago–nov/2021', valores: [23.0, 5.8, 6.2], cor: 'a' },
+      { nome: 'dez/2021–mai/2022', valores: [1.1, 0.3, 0.2], cor: 'b' },
+    ],
+    texto: [
+      'O Turno 1 tem cerca de **4 vezes** a taxa dos outros turnos, **antes e depois** da mudança',
+      'É a variável mais importante para o modelo (permutação e SHAP)',
+      'Hipóteses para a fábrica: carga no início do dia, estufa ainda fria, troca de equipe',
+    ],
+  },
+  {
+    tipo: 'barras',
+    kicker: 'Achado · posição da gaiola',
+    titulo: 'O efeito da posição só existia antes da mudança',
+    unidade: 'desvio da média da estufada (p.p.)',
+    casas: 3,
+    rotulos: ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12'],
+    series: [
+      { nome: 'ago–nov/2021 · p = 9,6×10⁻⁸', valores: [0.068, 0.009, -0.060, -0.048, -0.037, 0.007, 0.076, 0.000, -0.016, -0.036, -0.014, 0.052], cor: 'a' },
+      { nome: 'dez/2021–mai/2022 · p = 0,57', valores: [0.006, -0.005, 0.002, -0.008, 0.007, 0.007, 0.004, -0.003, 0.004, -0.022, -0.005, 0.014], cor: 'b' },
+    ],
+    texto: [
+      'Até nov/2021, as posições **1, 7 e 12** perdiam mais massa',
+      'Depois, os desvios **desaparecem**',
+      'Com a base inteira, o efeito ainda parece significativo: a explicação "global" enganaria',
+    ],
+    nota: 'Desvio de cada posição em relação à média das 12 gaiolas da mesma estufada (1.896 estufadas completas).',
+  },
+  {
+    tipo: 'numeros',
+    kicker: 'Resultados dos modelos',
+    titulo: 'Os modelos superam os baselines, com cautela',
+    numeros: [
+      { valor: '0,110', rotulo: 'MAE da quebra · 2023', detalhe: 'Random Forest, contra 0,132 do baseline pela mediana (p = 0,004). R² ≈ 0: o processo estava estável.' },
+      { valor: '0,163', rotulo: 'PR-AUC quebra baixa · 2021–22', detalhe: 'Regressão Logística, contra 0,074 da prevalência (p = 0,003). O modelo simples venceu os de árvores.' },
+      { valor: '0,137', rotulo: 'PR-AUC com dados sintéticos', detalhe: 'Treinar no sintético e testar no real ficou abaixo do treino real (0,159).' },
+    ],
+    nota: 'Validação por grupo; nenhum ciclo ou dia aparece ao mesmo tempo no treino e no teste.',
+  },
+  {
+    tipo: 'topicos',
+    kicker: 'Contribuições',
+    titulo: 'O que este trabalho entrega',
+    itens: [
+      'Um **pipeline reprodutível** dos arquivos da fábrica até modelos e explicações',
+      '**XAI como auditoria**: as explicações revelaram erros nos dados e na modelagem',
+      'Evidência de que o **turno** é um fator de risco persistente, e de que o efeito da **posição** depende do período',
+      'Alerta metodológico: **explicações valem para o regime em que foram calculadas**',
+    ],
+  },
+  {
+    tipo: 'topicos',
+    kicker: 'Próximos passos',
+    titulo: 'Para onde o trabalho vai',
+    itens: [
+      'Confirmar com a fábrica a causa da mudança de dez/2021 e a hipótese do Turno 1',
+      'Explicações por período com **detecção automática de mudança**',
+      'Mais ciclos ligados às pesagens e variáveis de **forma da curva** da estufa',
+      'Artigo submetido ao **ICEIS 2027** (versões em inglês e português)',
+    ],
+    nota: 'Simulador, métricas e explicações interativas: higorlucas125.github.io/xai.github.io',
+  },
+];
+
+/* =====================================================================
+   MOTOR DOS SLIDES — normalmente não precisa mexer daqui para baixo
+   ===================================================================== */
+const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const md = (s) => esc(s).replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+const cabeca = (s) => `${s.kicker ? `<div class="kicker">${esc(s.kicker)}</div>` : ''}<h1>${md(s.titulo)}</h1>`;
+const nota = (s) => (s.nota ? `<div class="nota">${md(s.nota)}</div>` : '');
+const num = (v, casas) => v.toLocaleString('pt-BR', { minimumFractionDigits: casas, maximumFractionDigits: casas });
+
+function graficoBarras(s) {
+  const W = 660, H = 380, mE = 64, mB = 34, mT = 30, n = s.rotulos.length, k = s.series.length;
+  const todos = s.series.flatMap((x) => x.valores);
+  const temNeg = todos.some((v) => v < 0);
+  const max = Math.max(...todos.map(Math.abs)) * 1.18 || 1;
+  const area = H - mB - mT;
+  const y0 = temNeg ? mT + area / 2 : H - mB;
+  const esc_ = temNeg ? (area / 2) / max : area / max;
+  const passo = (W - mE) / n;
+  const larg = (passo * 0.72) / k;
+  let svg = `<text x="0" y="16" font-size="14" fill="var(--muted)">${esc(s.unidade || '')}</text>`;
+  svg += `<line x1="${mE - 6}" x2="${W}" y1="${y0}" y2="${y0}" stroke="var(--line)" stroke-width="2"/>`;
+  s.rotulos.forEach((r, i) => {
+    const x0 = mE + i * passo + passo * 0.14;
+    s.series.forEach((serie, j) => {
+      const v = serie.valores[i];
+      const h = Math.max(Math.abs(v) * esc_, 1);
+      const x = x0 + j * larg;
+      const y = v >= 0 ? y0 - h : y0;
+      const cor = serie.cor === 'b' ? 'var(--b)' : 'var(--accent)';
+      svg += `<rect x="${x}" y="${y}" width="${larg - 2}" height="${h}" rx="2" fill="${cor}"><title>${esc(serie.nome ? `${serie.nome} · ` : '')}${esc(r)}: ${num(v, s.casas ?? 1)}</title></rect>`;
+      if (n * k <= 10) svg += `<text x="${x + (larg - 2) / 2}" y="${v >= 0 ? y - 7 : y + h + 16}" text-anchor="middle" font-size="14">${num(v, s.casas ?? 1)}</text>`;
+    });
+    svg += `<text x="${x0 + (passo * 0.72) / 2}" y="${H - 10}" text-anchor="middle" font-size="15">${esc(r)}</text>`;
+  });
+  const legenda = s.series.some((x) => x.nome)
+    ? `<div class="legenda">${s.series.map((x) => `<span class="${x.cor === 'b' ? 'b' : 'a'}">${esc(x.nome)}</span>`).join('')}</div>` : '';
+  return `<div><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(s.titulo)}">${svg}</svg>${legenda}</div>`;
+}
+
+const RENDER = {
+  capa: (s) => `${s.selo ? `<div class="selo">${esc(s.selo)}</div>` : ''}<h1>${md(s.titulo)}</h1><div class="sub">${md(s.subtitulo || '')}</div>
+    <div class="autores">${(s.autores || []).map(esc).join('<br>')}</div><div class="rodape">${esc(s.rodape || '')}</div>`,
+  texto: (s) => `${cabeca(s)}<div class="corpo texto${s.pendente ? ' pendente' : ''}">${s.paragrafos.map((p) => `<p>${md(p)}</p>`).join('')}
+    ${s.itens ? `<ul class="disciplinas">${s.itens.map((i) => `<li>${md(i)}</li>`).join('')}</ul>` : ''}
+    ${s.assinatura && !s.pendente ? `<div class="assinatura">${esc(s.assinatura)}</div>` : ''}</div>${nota(s)}`,
+  topicos: (s) => `${cabeca(s)}<div class="corpo"><ul class="itens">${s.itens.map((i) => `<li>${md(i)}</li>`).join('')}</ul></div>${nota(s)}`,
+  numeros: (s) => `${cabeca(s)}<div class="corpo"><div class="numeros">${s.numeros.map((n) =>
+    `<div class="numero"><div class="v">${esc(n.valor)}</div><div class="r">${md(n.rotulo)}</div>${n.detalhe ? `<div class="d">${md(n.detalhe)}</div>` : ''}</div>`).join('')}</div></div>${nota(s)}`,
+  fluxo: (s) => `${cabeca(s)}<div class="corpo"><div class="fluxo">${s.etapas.map((e, i) =>
+    `<div class="etapa"><div class="n">${i + 1}</div><h3>${md(e.titulo)}</h3><p>${md(e.texto)}</p></div>`).join('')}</div></div>${nota(s)}`,
+  colunas: (s) => `${cabeca(s)}<div class="corpo"><div class="colunas">${s.colunas.map((c) =>
+    `<div class="coluna"><h2>${md(c.titulo)}</h2><ul>${c.itens.map((i) => `<li>${md(i)}</li>`).join('')}</ul></div>`).join('')}</div></div>${nota(s)}`,
+  barras: (s) => `${cabeca(s)}<div class="corpo"><div class="grafico">${graficoBarras(s)}<ul>${(s.texto || []).map((t) => `<li>${md(t)}</li>`).join('')}</ul></div></div>${nota(s)}`,
+  tabela: (s) => `${cabeca(s)}<div class="corpo"><table><thead><tr>${s.cabecalho.map((c) => `<th>${esc(c)}</th>`).join('')}</tr></thead>
+    <tbody>${s.linhas.map((l) => `<tr>${l.map((c) => `<td>${md(c)}</td>`).join('')}</tr>`).join('')}</tbody></table></div>${nota(s)}`,
+};
+
+try { const t = localStorage.getItem('apresentacao-tema'); if (t) document.documentElement.dataset.theme = t; } catch (e) { /* sem storage */ }
+
+const palco = document.getElementById('palco');
+palco.innerHTML = SLIDES.map((s, i) =>
+  `<section class="slide ${s.tipo === 'capa' ? 'capa' : ''}" data-i="${i}" aria-roledescription="slide" aria-label="${i + 1} de ${SLIDES.length}">${(RENDER[s.tipo] || RENDER.topicos)(s)}</section>`).join('');
+const els = [...palco.querySelectorAll('.slide')];
+let atual = Math.min(Math.max(parseInt(location.hash.slice(1), 10) - 1 || 0, 0), els.length - 1);
+
+function escalar() {
+  const k = Math.min(window.innerWidth / 1320, window.innerHeight / 760);
+  document.documentElement.style.setProperty('--escala', `scale(${k})`);
+}
+function mostrar(i) {
+  atual = Math.min(Math.max(i, 0), els.length - 1);
+  els.forEach((el, j) => el.classList.toggle('ativo', j === atual));
+  document.getElementById('progresso').style.width = `${((atual + 1) / els.length) * 100}%`;
+  document.getElementById('contador').textContent = `${atual + 1} / ${els.length}`;
+  history.replaceState(null, '', `#${atual + 1}`);
+}
+function alternarGeral() { document.body.classList.toggle('geral'); }
+function alternarTema() {
+  const r = document.documentElement;
+  r.dataset.theme = r.dataset.theme === 'light' ? 'dark' : 'light';
+  try { localStorage.setItem('apresentacao-tema', r.dataset.theme); } catch (e) { /* sem storage */ }
+}
+const telaCheia = () => (document.fullscreenElement ? document.exitFullscreen() : document.documentElement.requestFullscreen?.());
+
+document.addEventListener('keydown', (e) => {
+  if (['ArrowRight', 'PageDown', ' ', 'Enter'].includes(e.key)) { e.preventDefault(); mostrar(atual + 1); }
+  else if (['ArrowLeft', 'PageUp', 'Backspace'].includes(e.key)) { e.preventDefault(); mostrar(atual - 1); }
+  else if (e.key === 'Home') mostrar(0);
+  else if (e.key === 'End') mostrar(els.length - 1);
+  else if (e.key.toLowerCase() === 'f') telaCheia();
+  else if (e.key.toLowerCase() === 't') alternarTema();
+  else if (e.key.toLowerCase() === 'o' || e.key === 'Escape') alternarGeral();
+});
+palco.addEventListener('click', (e) => {
+  const s = e.target.closest('.slide');
+  if (document.body.classList.contains('geral') && s) { alternarGeral(); mostrar(+s.dataset.i); }
+  else if (!document.body.classList.contains('geral')) mostrar(atual + 1);
+});
+document.getElementById('controles').addEventListener('click', (e) => {
+  const a = e.target.dataset?.acao;
+  if (!a) return;
+  ({ anterior: () => mostrar(atual - 1), proximo: () => mostrar(atual + 1), geral: alternarGeral, tema: alternarTema, tela: telaCheia })[a]?.();
+  e.stopPropagation();
+});
+let toque = null;
+palco.addEventListener('touchstart', (e) => { toque = e.touches[0].clientX; }, { passive: true });
+palco.addEventListener('touchend', (e) => {
+  if (toque === null) return;
+  const dx = e.changedTouches[0].clientX - toque;
+  if (Math.abs(dx) > 40) mostrar(atual + (dx < 0 ? 1 : -1));
+  toque = null;
+});
+window.addEventListener('resize', escalar);
+escalar();
+mostrar(atual);
+</script>
+</body>
+</html>

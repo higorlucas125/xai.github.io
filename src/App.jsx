@@ -51,6 +51,7 @@ export default function App({ modelo }) {
             <a href="#xai">{t('menu.xai')}</a>
             <a href="#limitacoes">{t('menu.limitacoes')}</a>
             <a href="#melhorias" className="menu-novo">{t('menu.melhorias')}</a>
+            <a href="./apresentacao/" className="menu-novo">{t('menu.apresentacao')}</a>
           </nav>
         </div>
       </header>

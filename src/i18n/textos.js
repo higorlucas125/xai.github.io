@@ -25,6 +25,7 @@ export const TEXTOS = {
     'menu.xai': 'XAI global',
     'menu.limitacoes': 'Limitações',
     'menu.melhorias': 'Melhorias',
+    'menu.apresentacao': 'Apresentação',
 
     'form.titulo': 'Parâmetros do ciclo',
     'form.restaurar': 'Restaurar',
@@ -187,6 +188,7 @@ export const TEXTOS = {
     'menu.xai': 'Global XAI',
     'menu.limitacoes': 'Limitations',
     'menu.melhorias': 'Improvements',
+    'menu.apresentacao': 'Presentation',
 
     'form.titulo': 'Cycle parameters',
     'form.restaurar': 'Reset',
